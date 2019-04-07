@@ -21,20 +21,33 @@ import static one.mixin.api.MixinHttpUtil.requestWithDefaultAuth;
 public class MixinClient {
     private static Logger LOGGER = LoggerFactory.getLogger(MixinClient.class);
 
-    private static GsonBuilder GSON_BUILDER= new GsonBuilder();
+    private static GsonBuilder GSON_BUILDER = new GsonBuilder();
+
     static {
         GSON_BUILDER.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
     }
 
     /**
+     * PIN is used to manage user’s addresses, assets and etc.
+     * There’s no default PIN for a Mixin Network user (except APP).
+     *
+     * @param oldPin old pin
+     * @param newPin new pin
+     */
+    public void createPin(String oldPin, String newPin) {
+
+    }
+
+    /**
      * Read asset by assetId
+     *
      * @param assetId asset_id
      * @return null if exception occurred
      */
-    public static Asset readAsset(String assetId) {
+    public Asset readAsset(String assetId) {
         String result = "";
         try {
-            result = requestWithDefaultAuth(String.format(Constants.READ_ASSET_PATH, assetId));
+            result = requestWithDefaultAuth(Constants.READ_ASSET_PATH + assetId);
         } catch (Exception e) {
         }
         List<Asset> assetList = parseResponse(result, Asset.class);
@@ -43,9 +56,10 @@ public class MixinClient {
 
     /**
      * Read user’s all assets
+     *
      * @return null if exception occurred.
      */
-    public static List<Asset> readAssets() {
+    public List<Asset> readAssets() {
         String result;
         try {
             result = requestWithDefaultAuth(Constants.READ_ASSETS_PATH);
@@ -58,15 +72,16 @@ public class MixinClient {
 
     private static <T> List<T> parseResponse(String json, Class<T> clazz) {
         Gson gson = GSON_BUILDER.create();
-        NetworkResponse response= gson.fromJson(json, NetworkResponse.class);
+        NetworkResponse response = gson.fromJson(json, NetworkResponse.class);
 
         List<T> listOfT = new ArrayList<T>();
         JsonElement data = response.getData();
         if (data instanceof JsonArray) {
-            TypeToken typeToken = new TypeToken<List<JsonObject>>() {};
+            TypeToken typeToken = new TypeToken<List<JsonObject>>() {
+            };
             Type type = typeToken.getType();
             List<JsonObject> arrayOfT = gson.fromJson(data, type);
-            for (JsonObject obj: arrayOfT) {
+            for (JsonObject obj : arrayOfT) {
                 listOfT.add(gson.fromJson(obj, clazz));
             }
         } else if (data instanceof JsonObject) {
@@ -75,22 +90,4 @@ public class MixinClient {
 
         return listOfT;
     }
-
-    public static void main(String[] args) {
-        try {
-            Long time1 = System.currentTimeMillis();
-//            List<Asset> assets = readAssets();
-            Long time2 = System.currentTimeMillis();
-//            System.out.println(assets);
-
-            System.out.println(time2 - time1);
-
-            String assetId = "a2c5d22b-62a2-4c13-b3f0-013290dbac60";
-            Asset asset = readAsset(assetId);
-            System.out.println(asset);
-        } catch (Exception e) {
-            System.out.println(e.fillInStackTrace());
-        }
-    }
-
 }
