@@ -16,5 +16,15 @@ public class Constants {
     /**
      * URI(without hostname) for reading asset by asset_id
      */
-    public static String READ_ASSET_PATH = "/assets/%s";
+    public static String READ_ASSET_PATH = "/assets/";
+
+    /**
+     * URI(without hostname) for creating/updating pin
+     */
+    public static String CREATE_PIN_PATH = "/pin/update";
+
+    /**
+     * URI(without hostname) for verifying pin
+     */
+    public static String VERIFY_PIN_PATH = "/pin/verify";
 }

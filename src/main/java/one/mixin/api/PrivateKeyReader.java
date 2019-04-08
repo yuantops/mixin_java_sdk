@@ -19,6 +19,8 @@ package one.mixin.api;
  *  
  ****************************************************************************/
 
+import org.apache.log4j.helpers.LogLog;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -92,12 +94,9 @@ class PrivateKeyReader {
     InputStream fis = null;
     boolean isRSAKey = false;
     try {
-        /*
-        File f = new File(fileName);
-        fis = new FileInputStream(f);
-        */
-        fis = inputStream;
-        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+//        File f = new File("rsa_private_key.txt.xx");
+//        fis = new FileInputStream(f);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder builder = new StringBuilder();
         boolean inKey = false;
         for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -272,8 +271,7 @@ class DerParser {
   /**
    * Create a new DER decoder from a byte array.
    * 
-   * @param The
-   *            encoded bytes
+   * @param bytes The encoded bytes
    * @throws IOException 
    */
   public DerParser(byte[] bytes) throws IOException {

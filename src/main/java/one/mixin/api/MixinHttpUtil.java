@@ -40,13 +40,24 @@ public class MixinHttpUtil {
         return response.body().string();
     }
 
-    public static String requestWithDefaultAuth(String path) throws IOException {
-        String authToken =
-            AuthUtil.SignAuthenticationToken(Config.APP_ID, Config.SESSION_ID, Config.RSA_PRIVATE_KEY, "GET", path, "");
-        return requestWithAuth(Constants.NETWORK_BASE_URL + path, authToken);
+    public static String requestWithDefaultAuth(String path, String httpMethod, String body) throws IOException {
+        String authToken = AuthUtil
+            .signAuthenticationToken(Config.APP_ID, Config.SESSION_ID, Config.RSA_PRIVATE_KEY, httpMethod.toUpperCase(),
+                path, body);
+        switch (httpMethod.toUpperCase()) {
+            case "GET":
+                return requestWithAuth(Constants.NETWORK_BASE_URL + path, authToken);
+            case "POST":
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", JSON.toString());
+                headers.put("Authorization", "Bearer " + authToken);
+                return post(Constants.NETWORK_BASE_URL + path, headers, body);
+            default:
+                return "";
+        }
     }
 
-    public static String requestWithAuth(String url, String authToken) throws IOException {
+    private static String requestWithAuth(String url, String authToken) throws IOException {
         Request request = new Request.Builder().url(url).addHeader("Content-Type", JSON.toString())
             .addHeader("Authorization", "Bearer " + authToken).build();
         Response response = client.newCall(request).execute();
@@ -57,13 +68,6 @@ public class MixinHttpUtil {
     }
 
     public static void main(String[] args) {
-        try {
-            String assetId = "43d61dcd-e413-450d-80b8-101d5e903357";
-            String result = requestWithDefaultAuth(String.format(Constants.READ_ASSETS_PATH, assetId));
-            System.out.println(result);
-        } catch (Exception e) {
-            System.out.println(e.fillInStackTrace());
-        }
     }
 
 }

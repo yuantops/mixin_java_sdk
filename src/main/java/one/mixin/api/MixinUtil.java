@@ -161,6 +161,8 @@ public class MixinUtil {
       cipher.init(Cipher.ENCRYPT_MODE, skeySpec, iv);
 
       byte[] encrypted = cipher.doFinal(toEnc);
+      System.out.println("origin encrypted:"+Base64.getEncoder().encodeToString(encrypted));
+
       byte[] all = new byte[ivv.length + encrypted.length];
       copyOfRange(ivv, all, 0);
       copyOfRange(encrypted, all, ivv.length);
