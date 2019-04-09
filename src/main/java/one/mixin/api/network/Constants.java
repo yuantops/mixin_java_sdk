@@ -27,4 +27,20 @@ public class Constants {
      * URI(without hostname) for verifying pin
      */
     public static String VERIFY_PIN_PATH = "/pin/verify";
+
+    /**
+     * URI(without hostname) for transferring
+     */
+    public static String TRANSFER_PATH = "/transfers";
+
+    /**
+     * URI(without hostname) for withdrawal
+     */
+    public static String WITHDRAWAL_PATH = "/withdrawals";
+
+    /**
+     * URI(without hostname) for creating address
+     */
+    public static String ADDRESSES_PATH = "/addresses";
+
 }

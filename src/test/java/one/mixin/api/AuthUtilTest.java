@@ -9,7 +9,7 @@ public class AuthUtilTest {
     @Test
     public void testEncryptPin() {
         String encryptedPin =
-            AuthUtil.EncryptPin(Config.PIN, Config.TOKEN, Config.SESSION_ID, Config.RSA_PRIVATE_KEY, 1);
+            AuthUtil.encryptPin(Config.PIN, Config.TOKEN, Config.SESSION_ID, Config.RSA_PRIVATE_KEY, 1);
         System.out.println(encryptedPin);
     }
 
@@ -17,7 +17,7 @@ public class AuthUtilTest {
     public void testRequestWithDefaultAuth() {
         String result = "";
         try {
-            result = MixinHttpUtil.requestWithDefaultAuth(Constants.READ_ASSETS_PATH, "GET", "");
+            result = MixinHttpUtil.requestWithAuth(Constants.READ_ASSETS_PATH, "GET", "", new Config());
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();

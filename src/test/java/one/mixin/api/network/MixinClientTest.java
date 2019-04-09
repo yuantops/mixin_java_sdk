@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.UUID;
 
 public class MixinClientTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(MixinClient.class);
@@ -21,11 +22,13 @@ public class MixinClientTest {
         Assert.assertTrue(assets != null);
         Assert.assertTrue(assets.size() > 1);
         System.out.println(assets.get(0).getAssetId());
+        LOGGER.info("{}", assets);
     }
 
     @Test
     public void testReadAssetById() {
-        Asset asset= mixinClient.readAsset("43d61dcd-e413-450d-80b8-101d5e903357");
+        String assetId = "965e5c6e-434c-3fa9-b780-c50f43cd955c";
+        Asset asset= mixinClient.readAsset(assetId);
         Assert.assertTrue(StringUtils.isNotEmpty(asset.getChainId()));
         LOGGER.info("{}", asset);
     }
@@ -34,6 +37,13 @@ public class MixinClientTest {
     public void testVerifyPin() {
         Object result = mixinClient.verifyPin(Config.PIN, null, null, null);
         LOGGER.info("result:{}", result);
+    }
 
+    @Test
+    public void testTransfer() {
+        String assetId = "965e5c6e-434c-3fa9-b780-c50f43cd955c";
+        String opponentId = "7b3f0a95-3ee9-4c1b-8ae9-170e3877d909";
+        Object result = mixinClient.transfer(opponentId, assetId, "0.001","hello", UUID.randomUUID().toString());
+        LOGGER.info("result:{}", result);
     }
 }
