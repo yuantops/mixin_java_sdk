@@ -89,4 +89,12 @@ public class Address implements Serializable {
     public void setUpdatedAt(String updatedAt) {
         UpdatedAt = updatedAt;
     }
+
+    @Override
+    public String toString() {
+        return "Address{" + "AddressId='" + AddressId + '\'' + ", AssetId='" + AssetId + '\'' + ", Label='" + Label
+            + '\'' + ", PublicKey='" + PublicKey + '\'' + ", AccountName='" + AccountName + '\'' + ", AccountTag='"
+            + AccountTag + '\'' + ", Fee='" + Fee + '\'' + ", Reserve='" + Reserve + '\'' + ", UpdatedAt='" + UpdatedAt
+            + '\'' + '}';
+    }
 }
