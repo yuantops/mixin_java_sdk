@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
-import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +26,9 @@ import java.util.stream.Collectors;
 
 import static one.mixin.api.MixinHttpUtil.requestWithAuth;
 
+/**
+ * MixinNetwork client.
+ */
 public class MixinClient {
     private static Logger LOGGER = LoggerFactory.getLogger(MixinClient.class);
 
@@ -37,7 +39,11 @@ public class MixinClient {
         GSON_BUILDER.disableHtmlEscaping();
     }
 
-    private Config config = new Config();
+    private Config config;
+
+    public MixinClient(Config config) {
+        this.config = config;
+    }
 
     /**
      * PIN is used to manage user’s addresses, assets and etc.
@@ -71,12 +77,9 @@ public class MixinClient {
      * Verify PIN if is valid or not. For example, you can verify PIN before updating it.
      *
      * @param pin
-     * @param pinToken
-     * @param sessionId
-     * @param privateKey
      * @return
      */
-    public String verifyPin(String pin, String pinToken, String sessionId, RSAPrivateKey privateKey) {
+    public String verifyPin(String pin) {
 
         String encryptedPin = AuthUtil
             .encryptPin(pin, config.TOKEN, config.SESSION_ID, config.RSA_PRIVATE_KEY, System.currentTimeMillis());
@@ -94,7 +97,8 @@ public class MixinClient {
     }
 
     /**
-     * Gant an asset’s deposit address, usually it is public_key, but account_name and account_tag is used for EOS. The api same as Read Asset.
+     * Gant an asset’s deposit address, usually it is public_key, but account_name and account_tag is used for EOS.
+     * The api same as Read Asset.
      *
      * @param assetId
      * @return
@@ -205,7 +209,7 @@ public class MixinClient {
     public Address readAddress(String addressId) {
         String result = "";
         try {
-            result = requestWithAuth(Constants.ADDRESSES_PATH + addressId, "GET", "", config);
+            result = requestWithAuth(Constants.ADDRESSES_PATH + "/" + addressId, "GET", "", config);
         } catch (Exception e) {
             LOGGER.error("MixinClient#readAddress() error: {}", e);
             return null;
@@ -224,8 +228,7 @@ public class MixinClient {
     public List<Address> withdrawalAddresses(String assetId) {
         String result = "";
         try {
-            result =
-                requestWithAuth(Constants.READ_ASSET_PATH + assetId + Constants.ADDRESSES_PATH, "GET", "", config);
+            result = requestWithAuth(Constants.READ_ASSET_PATH + assetId + Constants.ADDRESSES_PATH, "GET", "", config);
         } catch (Exception e) {
             LOGGER.error("MixinClient#withdrawalAddresses() error: {}", e);
             return null;
@@ -378,7 +381,7 @@ public class MixinClient {
      * Read public snapshots of Mixin Network
      *
      * @param limit   Integer: Max 500
-     * @param offset  String: format RFC3339Nano, UTC or non UTC time
+     * @param offset  String: format RFC3339Nano, UTC time
      * @param assetId UUID: OPTION, return all network snapshots or specific asset snapshots.
      * @param order   string: OPTION, ASC or DESC. DEFAULT DESC
      * @return
