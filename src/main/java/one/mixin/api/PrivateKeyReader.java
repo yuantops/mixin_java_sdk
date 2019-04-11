@@ -81,34 +81,6 @@ class PrivateKeyReader {
     this.inputStream = inputStream;
   }
 
-  public PrivateKeyReader() {
-  }
-
-  /**
-   * Get a Private Key from string content
-   *
-   * @param keyContent
-   * @return
-   * @throws IOException
-   * @throws GeneralSecurityException
-   */
-  public PrivateKey getPrivateKey(String keyContent) throws IOException, GeneralSecurityException {
-      PrivateKey key = null;
-      boolean isRSAKey = false;
-      KeySpec keySpec = null;
-      byte[] encoded = DatatypeConverter.parseBase64Binary(keyContent);
-      if (isRSAKey) {
-          keySpec = getRSAKeySpec(encoded);
-      } else {
-          keySpec = new PKCS8EncodedKeySpec(encoded);
-      }
-
-      KeyFactory kf = KeyFactory.getInstance("RSA");
-      key = kf.generatePrivate(keySpec);
-      return key;
-  }
-
-
   /**
    * Get a Private Key for the file.
    * 
